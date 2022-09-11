@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const postSchema = mongoose.Schema({
   title: String,
   message: String,
-  tag: [String],
+  tags: [String],
   creator: String,
   selectedFile: String,
   createdAt: {
