@@ -5,13 +5,21 @@ import FileBase from "react-file-base64";
 import { createPost } from "../../Redux/Actions/posts";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePost } from "../../Redux/Actions/posts";
-const Form = ({ currentId, setCurrentId }) => {
-  const post = useSelector((state) =>
-    currentId ? state.posts.find((p) => p._id === currentId) : null
-  );
+import { useHistory } from "react-router-dom";
 
+const Form = ({ currentId, setCurrentId }) => {
+  const history = useHistory();
+
+  const post = useSelector((state) =>
+    currentId ? state.posts.posts.find((p) => p._id === currentId) : null
+  );
+  console.log("11", post);
+
+  const user = JSON.parse(localStorage.getItem("profile"));
+
+  // console.log(user);
   const [postData, setPostData] = useState({
-    creator: "",
+    // creator: "",
     title: "",
     tags: "",
     message: "",
@@ -27,23 +35,35 @@ const Form = ({ currentId, setCurrentId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (currentId) {
-      dispatch(updatePost(currentId, postData));
+      dispatch(
+        updatePost(currentId, { ...postData, name: user?.result?.name })
+      );
     } else {
-      dispatch(createPost(postData));
+      dispatch(createPost({ ...postData, name: user?.result?.name }, history));
+      clear();
     }
-    clear();
     console.log("Post request done");
   };
   const clear = () => {
     setCurrentId(null);
     setPostData({
-      creator: "",
+      // creator: "",
       title: "",
-      tags: "",
+      tags: [],
       message: "",
       selectedFile: "",
     });
   };
+  // console.log(user?.result?.name);
+  if (!user?.result?.name) {
+    return (
+      <Paper className={classes.paper}>
+        <Typography variant="h4">
+          Please Sign in to create post and like the posts.
+        </Typography>
+      </Paper>
+    );
+  }
 
   return (
     <Paper className={classes.paper}>
@@ -56,7 +76,7 @@ const Form = ({ currentId, setCurrentId }) => {
         <Typography variant="h6">
           {currentId ? "Editing" : "Creating"} a Memory
         </Typography>
-        <TextField
+        {/* <TextField
           name="creator"
           varient="outlined"
           label="Creator"
@@ -65,7 +85,7 @@ const Form = ({ currentId, setCurrentId }) => {
           onChange={(e) =>
             setPostData({ ...postData, creator: e.target.value })
           }
-        />
+        /> */}
         <TextField
           name="title"
           varient="outlined"

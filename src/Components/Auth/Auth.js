@@ -14,7 +14,7 @@ import Input from "./Input";
 import GoogleLogin from "react-google-login";
 import { useDispatch } from "react-redux";
 import { AUTH } from "../../Redux/Constants/actionTypes";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { SignIn, SignUp } from "../../Redux/Actions/auth";
 
 const initialState = {
@@ -28,7 +28,7 @@ const initialState = {
 const Auth = () => {
   const classes = useStyle();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const history = useHistory();
   const [showPassword, setShowPassword] = useState(false);
   const [isSignedUp, setIsSignedUp] = useState(false);
   const [formData, setFormData] = useState(initialState);
@@ -45,9 +45,9 @@ const Auth = () => {
     e.preventDefault();
     console.log(formData);
     if (isSignedUp) {
-      dispatch(SignUp(formData, navigate));
+      dispatch(SignUp(formData, history));
     } else {
-      dispatch(SignIn(formData, navigate));
+      dispatch(SignIn(formData, history));
     }
   };
   const handleChange = (e) => {
@@ -58,7 +58,7 @@ const Auth = () => {
     const token = res?.tokenId;
     try {
       dispatch({ type: AUTH, payload: { result, token } });
-      navigate("/");
+      history.push("/");
     } catch (error) {
       console.log(error);
     }

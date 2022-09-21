@@ -6,8 +6,9 @@ export default makeStyles((theme) => ({
     borderRadius: 15,
     margin: "30px 0",
     display: "flex",
+    padding: "inherit", 
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
   },
   heading: {
@@ -15,7 +16,6 @@ export default makeStyles((theme) => ({
   },
   image: {
     marginLeft: "15px",
-    height: "60px",
   },
   toolbar: {
     display: "flex",
