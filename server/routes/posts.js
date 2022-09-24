@@ -7,6 +7,7 @@ import {
   likePost,
   getPostsBySearch,
   getPost,
+  commentPost,
 } from "../controllers/posts.js";
 import auth from "../middleware/auth.js";
 
@@ -19,5 +20,6 @@ routes.post("/", auth, createPost);
 routes.patch("/:id", auth, updatePost);
 routes.delete("/:id", auth, deletePost);
 routes.patch("/:id/likeCount", auth, likePost);
+routes.post("/:id/comment", auth, commentPost);
 
 export default routes;
