@@ -20,6 +20,6 @@ routes.post("/", auth, createPost);
 routes.patch("/:id", auth, updatePost);
 routes.delete("/:id", auth, deletePost);
 routes.patch("/:id/likeCount", auth, likePost);
-routes.post("/:id/comment", auth, commentPost);
+routes.post("/:id/comment", commentPost);
 
 export default routes;
