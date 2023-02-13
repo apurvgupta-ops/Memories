@@ -10,7 +10,7 @@ import {
 import ChipInput from "material-ui-chip-input";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getPosts, getPostsBySearch } from "../../Redux/Actions/posts";
+import { getPostsBySearch } from "../../Redux/Actions/posts";
 import Form from "../Form/Form";
 import Posts from "../Posts/Posts";
 import useStyle from "./styles";
@@ -34,7 +34,6 @@ const Home = () => {
 
   const searchPost = () => {
     console.log("adjh");
-
     if (searchTerm.trim() || tags) {
       dispatch(getPostsBySearch({ searchTerm, tags: tags.join(",") }));
       history.push(
@@ -92,8 +91,8 @@ const Home = () => {
               <ChipInput
                 style={{ margin: "10px 0" }}
                 value={tags}
-                onAdd={handleAdd}
-                onDelete={handleDelete}
+                onAdd={(chip) => handleAdd(chip)}
+                onDelete={(chip) => handleDelete(chip)}
                 label="Search Tags"
                 variant="outlined"
               />

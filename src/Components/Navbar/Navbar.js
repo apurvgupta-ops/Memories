@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { AppBar, Avatar, Button, Toolbar, Typography } from "@material-ui/core";
 import useStyle from "./styles.js";
 import memoriesLogo from "../../images/memories-Logo.png";
@@ -12,14 +12,16 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const classes = useStyle();
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  const [isMenu, setIsMenu] = useState(false);
+  const windowRef = useRef();
   // console.log(user);
-
   const Logout = () => {
     dispatch({ type: LOGOUT });
     history.push("/");
     setUser(null);
+    setIsMenu(false);
   };
 
   // CHECKING IF THE USER TOKEN IS EXPIRED OR NOT
@@ -28,14 +30,19 @@ const Navbar = () => {
     // console.log(token);
     if (token) {
       const decodeToken = decode(token);
+      // setIsMenu(!isMenu);
       // console.log(decodeToken.exp * 1000);
       // console.log(new Date().getTime());
       if (decodeToken.exp * 1000 < new Date().getTime()) Logout();
     }
-
     setUser(JSON.parse(localStorage.getItem("profile")));
     // console.log(location);
-  }, []);
+    // handleClickOutside();
+  }, [location]);
+  const showMenu = () => {
+    console.log("clicked", isMenu);
+    setIsMenu(!isMenu);
+  };
 
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
@@ -56,7 +63,12 @@ const Navbar = () => {
       </Link>
       <Toolbar className={classes.toolbar}>
         {user ? (
-          <div className={classes.profile}>
+          <div
+            className={classes.profile}
+            // onMouseEnter={() => setIsMenu(true)}
+            // onMouseLeave={() => setIsMenu(false)}
+            onClick={showMenu}
+          >
             <Avatar
               className={classes.purple}
               alt={user.result?.name}
@@ -64,21 +76,27 @@ const Navbar = () => {
             >
               {user.result.name.charAt(0)}
             </Avatar>
-            <Typography
-              className={classes.userName}
-              variant="contained"
-              color="secondary"
-            >
-              {user.result.name}
-            </Typography>
-            <Button
-              variant="contained"
-              className={classes.logout}
-              color="secondary"
-              onClick={Logout}
-            >
-              Logout
-            </Button>
+
+            {isMenu && (
+              // <p style={{ fontSize: "30px" }}>jii</p>
+              <div className={classes.menu}>
+                <Typography
+                  className={classes.userName}
+                  variant="contained"
+                  // color="secondary"
+                >
+                  {user.result.name}
+                </Typography>
+                <Button
+                  variant="contained"
+                  className={classes.logout}
+                  color="secondary"
+                  onClick={Logout}
+                >
+                  Logout
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
           <Button

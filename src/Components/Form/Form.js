@@ -6,6 +6,7 @@ import { createPost } from "../../Redux/Actions/posts";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePost } from "../../Redux/Actions/posts";
 import { useHistory } from "react-router-dom";
+import ChipInput from "material-ui-chip-input";
 
 const Form = ({ currentId, setCurrentId }) => {
   const history = useHistory();
@@ -13,7 +14,7 @@ const Form = ({ currentId, setCurrentId }) => {
   const post = useSelector((state) =>
     currentId ? state.posts.posts.find((p) => p._id === currentId) : null
   );
-  console.log("11", post);
+  // console.log("11", post);
 
   const user = JSON.parse(localStorage.getItem("profile"));
 
@@ -21,7 +22,7 @@ const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({
     // creator: "",
     title: "",
-    tags: "",
+    tags: [],
     message: "",
     selectedFile: "",
   });
@@ -39,8 +40,19 @@ const Form = ({ currentId, setCurrentId }) => {
         updatePost(currentId, { ...postData, name: user?.result?.name })
       );
     } else {
-      dispatch(createPost({ ...postData, name: user?.result?.name }, history));
-      clear();
+      if (
+        postData.title === "" ||
+        postData.tags === "" ||
+        postData.message === "" ||
+        postData.selectedFile === ""
+      ) {
+        return null;
+      } else {
+        dispatch(
+          createPost({ ...postData, name: user?.result?.name }, history)
+        );
+        clear();
+      }
     }
     console.log("Post request done");
   };
@@ -64,6 +76,17 @@ const Form = ({ currentId, setCurrentId }) => {
       </Paper>
     );
   }
+
+  const handleAddChip = (tag) => {
+    setPostData({ ...postData, tags: [...postData.tags, tag] });
+  };
+
+  const handleDeleteChip = (chipToDelete) => {
+    setPostData({
+      ...postData,
+      tags: postData.tags.filter((tag) => tag !== chipToDelete),
+    });
+  };
 
   return (
     <Paper className={classes.paper}>
@@ -104,16 +127,17 @@ const Form = ({ currentId, setCurrentId }) => {
             setPostData({ ...postData, message: e.target.value })
           }
         />
-        <TextField
-          name="tags"
-          varient="outlined"
-          label="Tags"
-          fullWidth
-          value={postData.tags}
-          onChange={(e) =>
-            setPostData({ ...postData, tags: e.target.value.split(",") })
-          }
-        />
+        <div style={{ padding: "5px 0", width: "96%" }}>
+          <ChipInput
+            name="tags"
+            variant="outlined"
+            label="Tags"
+            fullWidth
+            value={postData.tags}
+            onAdd={(chip) => handleAddChip(chip)}
+            onDelete={(chip) => handleDeleteChip(chip)}
+          />
+        </div>
         {/* <TextField
           name=""
           type="file"

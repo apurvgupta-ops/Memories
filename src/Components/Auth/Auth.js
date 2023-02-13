@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Paper,
@@ -43,13 +43,14 @@ const Auth = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
     if (isSignedUp) {
       dispatch(SignUp(formData, history));
     } else {
       dispatch(SignIn(formData, history));
     }
   };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
